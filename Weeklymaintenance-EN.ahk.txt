@@ -62,7 +62,7 @@ btnSfc := MainGui.Add(
 btnFull := MainGui.Add(
     "Button",
     "x+15 w280 h35",
-    "Full health check"
+    "Full Health Check"
 )
 
 MainGui.Add(
@@ -526,7 +526,7 @@ RunFullHealth(*) {
         return
 
     if !ConfirmAction(
-        "FULL HEALTH CHECK`n`n"
+        "Full Health Check`n`n"
         . "The following steps will be executed:`n`n"
         . "1. DISM CheckHealth`n"
         . "2. DISM ScanHealth`n"
@@ -543,7 +543,7 @@ RunFullHealth(*) {
 
     try {
         LogMessage("============================================")
-        LogMessage("FULL HEALTH CHECK START")
+        LogMessage("Full health Check started")
         LogMessage("============================================")
 
         SetStatus("1/6 - DISM CheckHealth...")
@@ -574,13 +574,13 @@ RunFullHealth(*) {
         GenerateSystemReportInternal()
 
         LogMessage("============================================")
-        LogMessage("FULL HEALTH CHECK FINISHED")
+        LogMessage("Full Health Check finished")
         LogMessage("============================================")
 
         SetStatus("Full Health Check completed.")
 
         MsgBox(
-            "FULL HEALTH CHECK COMPLETED.`n`n"
+            "Full Health Check completed.`n`n"
             . "✓ DISM CheckHealth`n"
             . "✓ DISM ScanHealth`n"
             . "✓ DISM RestoreHealth`n"
