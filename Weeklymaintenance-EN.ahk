@@ -78,7 +78,7 @@ MainGui.Add(
 Tabs.UseTab(2)
 
 MainGui.Add("Text", "xs+10 y+15 Section", "Windows cleanup:")
-MainGui.Add("Text", "xs y+8 w560 cGray", "Cleanup only removes temporarily cache which is safe to remove.")
+MainGui.Add("Text", "xs y+8 w560 cGray", "Cleanup only removes temporary cache which is safe to remove.")
 
 btnTemp := MainGui.Add(
     "Button",
@@ -107,7 +107,7 @@ btnCatroot := MainGui.Add(
 MainGui.Add(
     "Text",
     "xs y+20 w560 cGray",
-    "Windows Update reset will stop temporarily and windows services will automatically create new cache."
+    "Windows Update reset will stop temporary and windows services will automatically create new cache."
 )
 
 ; ============================================================
@@ -612,7 +612,7 @@ global IsRunning
 if IsRunning
 return
 if !ConfirmAction(
-"Temporarily files will be removed.nn" .
+"Temporary files will be removed.nn" .
 "Files which are currently in use will be skipped.nn" .
 "Continue?"
 )
@@ -709,7 +709,7 @@ if IsRunning
 return
 if !ConfirmAction(
 "Windows Update cache will be reset.nn" .
-"Windows update service will be stopped temporarily " .
+"Windows update service will be stopped temporary " .
 "SoftwareDistribution will be renamed.nn" .
 "continue?"
 )
@@ -1125,4 +1125,3 @@ err.Message,
 )
 }
 }
-
