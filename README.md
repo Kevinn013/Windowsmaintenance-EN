@@ -61,12 +61,13 @@ Autohotkey 2.0 official webpage: https://www.autohotkey.com/v2/
 
 ---
 
-## Usage
+## Usage & Windows Security Exclusion
+Because this tool is a custom executable, Windows Security may flag or block it.
+To ensure the application runs correctly, add it as an exclusion:
 
-Since its a custom file it is important to exclude it to windows security. You can do that with the following steps:
-
-- 1: Open Windows Security
-- 2: Go to Virus and Threat protection
-- 3: Click on Virus and Threat Protection; Manage Settings
-- 4: Scroll completely down and click exclusions
-- 5: Click on add file and select the .exe 
+- Open Windows Security
+- Go to Virus & threat protection
+- Click Manage settings under Virus & threat protection settings
+- Scroll down to Exclusions
+- Click Add an exclusion → choose File
+- Select the .exe of the Weekly Maintenance
