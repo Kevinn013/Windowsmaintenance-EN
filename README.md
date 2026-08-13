@@ -16,6 +16,7 @@ This tool is ideal for users who want safe, automated Windows maintenance withou
 - **[System Report](ca://s?q=System_Report_generation)** – Generates detailed hardware and OS diagnostics  
 - **[Log Management](ca://s?q=Log_management_in_AHK)** – View, clear, and export logs directly from the GUI  
 
+Explanations about the certain features will be added in the end of this readme.
 ---
 
 ## Screenshot
@@ -68,3 +69,27 @@ MIT License - free to use, modify, and distribute.
 
 ## Resources
 Autohotkey 2.0 official webpage: https://www.autohotkey.com/v2/
+
+---
+
+## Explanations
+
+**DISM**
+DISM is an official windows tool which is a command-line tool that can be used to service and prepare Windows images.
+https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/what-is-dism?view=windows-11
+
+**SFC**
+Scans and verifies the integrity of all protected system files and replaces incorrect versions with correct versions. If this command discovers that a protected file has been overwritten, it retrieves the correct version of the file from the systemroot\ folder, and then replaces the incorrect file.
+https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/sfc
+
+**Component store**
+This is a core operating system directory. It manages and stores all system files, libraries, and packages required to run, update, customize, and recover Windows, safely handling multiple file versions via hard links to prevent software conflicts.
+https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/manage-the-component-store?view=windows-11
+
+**Windows Update reset**
+clears and restarts the system services, temporary folders, and cache files responsible for downloading and installing system patches. This process fixes stuck updates, error codes, and corrupted data by forcing your PC to rebuild a clean update environment from scratch.
+https://learn.microsoft.com/en-us/troubleshoot/windows-client/installing-updates-features-roles/additional-resources-for-windows-update
+
+**Catroot2:**
+The catroot2 folder is a crucial operating system directory in Windows located in C:\Windows\System32\catroot2 that stores digital signatures and database files for Windows Update packages. It acts as a temporary staging area used by the Cryptographic Service to verify the authenticity and integrity of update files during installation
+**System Report**
