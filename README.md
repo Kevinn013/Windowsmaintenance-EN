@@ -51,8 +51,9 @@ Created with ❤️ and curiosity for system integrity and safe automation.
 ---
 
 ## License
-MIT License — free to use, modify, and distribute.
+MIT License - free to use, modify, and distribute.
 
 ---
 
+## Resources
 Autohotkey 2.0 official webpage: https://www.autohotkey.com/v2/
