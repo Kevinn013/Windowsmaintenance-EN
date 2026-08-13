@@ -2,6 +2,7 @@
 
 A lightweight **AutoHotkey v2** application for safe Windows maintenance and diagnostics.  
 No registry edits, no performance tweaks — only official Microsoft servicing commands.
+This tool is ideal for users who want safe, automated Windows maintenance without modifying system configuration.
 
 ---
 
