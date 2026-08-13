@@ -57,3 +57,16 @@ MIT License - free to use, modify, and distribute.
 
 ## Resources
 Autohotkey 2.0 official webpage: https://www.autohotkey.com/v2/
+
+
+---
+
+## Usage
+
+Since its a custom file it is important to exclude it to windows security. You can do that with the following steps:
+
+1: Open Windows Security
+2: Go to Virus and Threat protection
+3: Click on Virus and Threat Protection; Manage Settings
+4: Scroll completely down and click exclusions
+5: Click on add file and select the .exe 
