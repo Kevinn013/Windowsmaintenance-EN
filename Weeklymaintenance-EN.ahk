@@ -62,7 +62,7 @@ btnSfc := MainGui.Add(
 btnFull := MainGui.Add(
     "Button",
     "x+15 w280 h35",
-    "FULL HEALTH CHECK"
+    "Full health check"
 )
 
 MainGui.Add(
@@ -107,7 +107,7 @@ btnCatroot := MainGui.Add(
 MainGui.Add(
     "Text",
     "xs y+20 w560 cGray",
-    "Windows Update reset will stop temporary and windows services will automatically create new cache."
+    "Windows Update reset will stop temporarily and windows services will automatically create new cache."
 )
 
 ; ============================================================
@@ -116,7 +116,7 @@ MainGui.Add(
 
 Tabs.UseTab(3)
 
-MainGui.Add("Text", "xs+10 y+15 Section", "Systemdiagnostics:")
+MainGui.Add("Text", "xs+10 y+15 Section", "System diagnostics:")
 MainGui.Add("Text", "xs y+8 w560 cGray", "Collects logs without removing any system settings.")
 
 btnSystemReport := MainGui.Add(
@@ -211,7 +211,7 @@ MainGui.OnEvent("Close", (*) => ExitApp())
 
 LogMessage("============================================")
 LogMessage(AppName " Started.")
-LogMessage("Windows versie: " GetWindowsVersion())
+LogMessage("Windows Version: " GetWindowsVersion())
 LogMessage("============================================")
 
 MainGui.Show()
@@ -436,242 +436,245 @@ RepairWindows(*) {
         return
 
     if !ConfirmAction(
-        "Windows components will be checked and repaired if needed.`n`n" .
-        "This can take a while.`n`nContinue?"
+        "Windows components will be checked and repaired if needed.`n`n"
+        . "This can take a while.`n`n"
+        . "Continue?"
     )
         return
 
     SetButtonsEnabled(false)
 
-    try {SetStatus("Running DISM RestoreHealth...")
-exitCode := RunCommand(
-"DISM.exe /Online /Cleanup-Image /RestoreHealth",
-"DISM RestoreHealth"
-)
-if !CheckSuccess(exitCode, "DISM RestoreHealth") {
-SetStatus("DISM reparatie mislukt.")
-MsgBox(
-"DISM unsuccesful.nn" .
-"Exit code: " exitCode,
-"Windows Maintenance Suite",
-"Iconx"
-)
-return
+    try {
+        SetStatus("Running DISM RestoreHealth...")
+
+        exitCode := RunCommand(
+            "DISM.exe /Online /Cleanup-Image /RestoreHealth",
+            "DISM RestoreHealth"
+        )
+
+        if !CheckSuccess(exitCode, "DISM RestoreHealth") {
+            SetStatus("DISM repair failed.")
+            MsgBox(
+                "DISM was unsuccessful.`n`nExit code: " exitCode,
+                "Windows Maintenance Suite",
+                "Iconx"
+            )
+            return
+        }
+
+        SetStatus("Windows component store repaired.")
+
+        MsgBox(
+            "DISM RestoreHealth completed successfully.",
+            "Windows Maintenance Suite",
+            "Iconi"
+        )
+    }
+    finally {
+        SetButtonsEnabled(true)
+    }
 }
-SetStatus("Windows component store repaired.")
-MsgBox(
-"DISM RestoreHealth completed succesfully.",
-"Windows Maintenance Suite",
-"Iconi"
-)
-}
-finally {
-SetButtonsEnabled(true)
-}
-}
+
 RunSfc(*) {
-global IsRunning
-if IsRunning
-return
-if !ConfirmAction(
-"SFC /scannow is running.nn" .
-"Windows checks for damaged system files.nnContinue?"
-)
-return
-SetButtonsEnabled(false)
-try {
-SetStatus("Running SFC /scannow...")
-exitCode := RunCommand(
-"sfc.exe /scannow",
-"SFC /scannow"
-)
-if CheckSuccess(exitCode, "SFC /scannow") {
-SetStatus("SFC voltooid.")
-MsgBox(
-"SFC /scannow completed.nn" .
-"Check the logs tab for results.",
-"Windows Maintenance Suite",
-"Iconi"
-)
-}
-else {
-SetStatus("SFC has reported an error.")
-MsgBox(
-"SFC stopped with exit code: " exitCode,
-"Windows Maintenance Suite",
-"Iconx"
-)
-}
-}
-finally {
-SetButtonsEnabled(true)
-}
+    global IsRunning
+
+    if IsRunning
+        return
+
+    if !ConfirmAction(
+        "SFC /scannow will be executed.`n`n"
+        . "Windows will check protected system files.`n`n"
+        . "Continue?"
+    )
+        return
+
+    SetButtonsEnabled(false)
+
+    try {
+        SetStatus("Running SFC /scannow...")
+
+        exitCode := RunCommand(
+            "sfc.exe /scannow",
+            "SFC /scannow"
+        )
+
+        if CheckSuccess(exitCode, "SFC /scannow") {
+            SetStatus("SFC completed.")
+            MsgBox(
+                "SFC /scannow completed.`n`nCheck the Logs tab for results.",
+                "Windows Maintenance Suite",
+                "Iconi"
+            )
+        }
+        else {
+            SetStatus("SFC reported an error.")
+            MsgBox(
+                "SFC stopped with exit code: " exitCode,
+                "Windows Maintenance Suite",
+                "Iconx"
+            )
+        }
+    }
+    finally {
+        SetButtonsEnabled(true)
+    }
 }
 RunFullHealth(*) {
-global IsRunning
-if IsRunning
-return
-if !ConfirmAction(
-"FULL HEALTH CHECKnn" .
-"This will continue with the next steps:nn" .
-"1. DISM CheckHealthn" . "2. DISM ScanHealthn" .
-"3. DISM RestoreHealthn" . "4. SFC /scannown" .
-"5. Component Store Cleanupn" . "6. System reportnn" . "This can take a while depending on your hardware.n`n" .
-"Continue?"
-)
-return
-SetButtonsEnabled(false)
-try {
-LogMessage("============================================")
-LogMessage("FULL HEALTH CHECK START")
-LogMessage("============================================")
-; ----------------------------------------------------
-; STEP 1
-; ----------------------------------------------------
-SetStatus("1/6 - DISM CheckHealth...")
-exitCode := RunCommand(
-"DISM.exe /Online /Cleanup-Image /CheckHealth",
-"FULL - DISM CheckHealth"
-)
-; ----------------------------------------------------
-; STEP 2
-; ----------------------------------------------------
-SetStatus("2/6 - DISM ScanHealth...")
-exitCode := RunCommand(
-"DISM.exe /Online /Cleanup-Image /ScanHealth",
-"FULL - DISM ScanHealth"
-)
-; ----------------------------------------------------
-; STEP 3
-; ----------------------------------------------------
-SetStatus("3/6 - DISM RestoreHealth...")
-exitCode := RunCommand(
-"DISM.exe /Online /Cleanup-Image /RestoreHealth",
-"FULL - DISM RestoreHealth"
-)
-if exitCode != 0 {
-LogMessage(
-"WARNING: DISM RestoreHealth returned " exitCode
-)
+    global IsRunning
+
+    if IsRunning
+        return
+
+    if !ConfirmAction(
+        "FULL HEALTH CHECK`n`n"
+        . "The following steps will be executed:`n`n"
+        . "1. DISM CheckHealth`n"
+        . "2. DISM ScanHealth`n"
+        . "3. DISM RestoreHealth`n"
+        . "4. SFC /scannow`n"
+        . "5. Component Store Cleanup`n"
+        . "6. System Report`n`n"
+        . "This may take a while depending on your hardware.`n`n"
+        . "Continue?"
+    )
+        return
+
+    SetButtonsEnabled(false)
+
+    try {
+        LogMessage("============================================")
+        LogMessage("FULL HEALTH CHECK START")
+        LogMessage("============================================")
+
+        SetStatus("1/6 - DISM CheckHealth...")
+        RunCommand("DISM.exe /Online /Cleanup-Image /CheckHealth", "FULL - DISM CheckHealth")
+
+        SetStatus("2/6 - DISM ScanHealth...")
+        RunCommand("DISM.exe /Online /Cleanup-Image /ScanHealth", "FULL - DISM ScanHealth")
+
+        SetStatus("3/6 - DISM RestoreHealth...")
+        exitCode := RunCommand("DISM.exe /Online /Cleanup-Image /RestoreHealth", "FULL - DISM RestoreHealth")
+
+        if exitCode != 0
+            LogMessage("WARNING: DISM RestoreHealth returned " exitCode)
+
+        SetStatus("4/6 - SFC /scannow...")
+        exitCode := RunCommand("sfc.exe /scannow", "FULL - SFC /scannow")
+
+        if exitCode != 0
+            LogMessage("WARNING: SFC returned " exitCode)
+
+        SetStatus("5/6 - Component Store Cleanup...")
+        exitCode := RunCommand("DISM.exe /Online /Cleanup-Image /StartComponentCleanup", "FULL - Component Store Cleanup")
+
+        if exitCode != 0
+            LogMessage("WARNING: Component cleanup returned " exitCode)
+
+        SetStatus("6/6 - Generating system report...")
+        GenerateSystemReportInternal()
+
+        LogMessage("============================================")
+        LogMessage("FULL HEALTH CHECK FINISHED")
+        LogMessage("============================================")
+
+        SetStatus("Full Health Check completed.")
+
+        MsgBox(
+            "FULL HEALTH CHECK COMPLETED.`n`n"
+            . "✓ DISM CheckHealth`n"
+            . "✓ DISM ScanHealth`n"
+            . "✓ DISM RestoreHealth`n"
+            . "✓ SFC /scannow`n"
+            . "✓ Component Store Cleanup`n"
+            . "✓ System Report`n`n"
+            . "See the Logs tab for details.",
+            "Windows Maintenance Suite",
+            "Iconi"
+        )
+    }
+    finally {
+        SetButtonsEnabled(true)
+    }
 }
-; ----------------------------------------------------
-; STEP 4
-; ----------------------------------------------------
-SetStatus("4/6 - SFC /scannow...")
-exitCode := RunCommand(
-"sfc.exe /scannow",
-"FULL - SFC /scannow"
-)
-if exitCode != 0 {
-LogMessage(
-"WARNING: SFC returned " exitCode
-)
-}
-; ----------------------------------------------------
-; STEP 5
-; ----------------------------------------------------
-SetStatus("5/6 - Component Store Cleanup...")
-exitCode := RunCommand(
-"DISM.exe /Online /Cleanup-Image /StartComponentCleanup",
-"FULL - Component Store Cleanup"
-)
-if exitCode != 0 {
-LogMessage(
-"WARNING: Component cleanup returned " exitCode
-)
-}
-; ----------------------------------------------------
-; STEP 6
-; ----------------------------------------------------
-SetStatus("6/6 - Generating system report...")
-GenerateSystemReportInternal()
-LogMessage("============================================")
-LogMessage("FULL HEALTH CHECK FINISHED")
-LogMessage("============================================")
-SetStatus("Full Health Check voltooid.")
-MsgBox(
-"FULL HEALTH CHECK IS KLAAR.nn" .
-"The following steps have been succesfully completed:nn" .
-"✓ DISM CheckHealthn" . "✓ DISM ScanHealthn" .
-"✓ DISM RestoreHealthn" . "✓ SFC /scannown" .
-"✓ Component Store Cleanupn" . "✓ System Reportn`n" .
-"See the logs tab for results.",
-"Windows Maintenance Suite",
-"Iconi"
-)
-}
-finally {
-SetButtonsEnabled(true)
-}
-}
+
 ; ============================================================
 ; CLEANUP
 ; ============================================================
 CleanTempFiles(*) {
-global IsRunning
-if IsRunning
-return
-if !ConfirmAction(
-"Temporary files will be removed.nn" .
-"Files which are currently in use will be skipped.nn" .
-"Continue?"
-)
-return
-SetButtonsEnabled(false)
-try {
-SetStatus("Cleaning user temporary files...")
-tempPath := EnvGet("TEMP")
-if DirExist(tempPath) {
-LogMessage("Cleaning TEMP: " tempPath)
-Loop Files, tempPath "*", "FD" {
-try {
-if InStr(A_LoopFileAttrib, "D")
-DirDelete(A_LoopFileFullPath, true)
-else
-FileDelete(A_LoopFileFullPath)
-}
-catch {
-; File in use / permission denied.
-; Safe to ignore.
-}
-}
-}
-SetStatus("Cleaning Windows temporary files...")
-windowsTemp := A_WinDir "\Temp"
-if DirExist(windowsTemp) {
-LogMessage("Cleaning Windows TEMP: " windowsTemp)
-Loop Files, windowsTemp "*", "FD" {
-try {
-if InStr(A_LoopFileAttrib, "D")
-DirDelete(A_LoopFileFullPath, true)
-else
-FileDelete(A_LoopFileFullPath)
-}
-catch {
-; Safe to ignore locked files.
-}
-}
-}
-LogMessage("Temporary file cleanup completed.")
-SetStatus("Temporary files cleanup complete.")
-MsgBox(
-"Temporary file cleanup is completed.nn" .
-"Files which were in use by windows are skipped.",
-"Cleanup",
-"Iconi"
-)
-}
-finally {
-SetButtonsEnabled(true)
-}
+    global IsRunning
+
+    if IsRunning
+        return
+
+    if !ConfirmAction(
+        "Temporary files will be removed.`n`n"
+        . "Files currently in use will be skipped.`n`n"
+        . "Continue?"
+    )
+        return
+
+    SetButtonsEnabled(false)
+
+    try {
+        SetStatus("Cleaning user temporary files...")
+
+        tempPath := EnvGet("TEMP")
+
+        if DirExist(tempPath) {
+            LogMessage("Cleaning TEMP: " tempPath)
+
+            Loop Files, tempPath "\*", "FD" {
+                try {
+                    if InStr(A_LoopFileAttrib, "D")
+                        DirDelete(A_LoopFileFullPath, true)
+                    else
+                        FileDelete(A_LoopFileFullPath)
+                }
+                catch {
+                }
+            }
+        }
+
+        SetStatus("Cleaning Windows temporary files...")
+
+        windowsTemp := A_WinDir "\Temp"
+
+        if DirExist(windowsTemp) {
+            LogMessage("Cleaning Windows TEMP: " windowsTemp)
+
+            Loop Files, windowsTemp "\*", "FD" {
+                try {
+                    if InStr(A_LoopFileAttrib, "D")
+                        DirDelete(A_LoopFileFullPath, true)
+                    else
+                        FileDelete(A_LoopFileFullPath)
+                }
+                catch {
+                }
+            }
+        }
+
+        LogMessage("Temporary file cleanup completed.")
+        SetStatus("Temporary files cleanup complete.")
+
+        MsgBox(
+            "Temporary file cleanup completed.`n`n"
+            . "Files in use were skipped.",
+            "Cleanup",
+            "Iconi"
+        )
+    }
+    finally {
+        SetButtonsEnabled(true)
+    }
 }
 ComponentCleanup(*) {
 global IsRunning
 if IsRunning
 return
 if !ConfirmAction(
-"DISM Component Store Cleanup has started.nn" .
-"Windows will remove old components which are not needed anymore.nn" .
+"DISM Component Store Cleanup has started." .
+"Windows will remove old components which are not needed anymore." .
 "Continue?"
 )
 return
@@ -683,7 +686,7 @@ exitCode := RunCommand(
 "Component Store Cleanup"
 )
 if CheckSuccess(exitCode, "Component Store Cleanup") {
-SetStatus("Component Store Cleanup voltooid.")
+SetStatus("Component Store Cleanup completed.")
 MsgBox(
 "Component Store Cleanup completed.",
 "Cleanup",
@@ -693,7 +696,7 @@ MsgBox(
 else {
 SetStatus("Component Store Cleanup has reported an error.")
 MsgBox(
-"Cleanup eindigde met exit code: " exitCode,
+"Cleanup ended with exit code: " exitCode,
 "Cleanup",
 "Iconx"
 )
@@ -708,10 +711,10 @@ global IsRunning
 if IsRunning
 return
 if !ConfirmAction(
-"Windows Update cache will be reset.nn" .
+"Windows Update cache will be reset." .
 "Windows update service will be stopped temporary " .
-"SoftwareDistribution will be renamed.nn" .
-"continue?"
+"SoftwareDistribution will be renamed." .
+"Continue?"
 )
 return
 SetButtonsEnabled(false)
@@ -768,7 +771,7 @@ RunCommand(
 LogMessage("Windows Update reset completed.")
 SetStatus("Windows Update reset completed.")
 MsgBox(
-"Windows Update reset has been completed.nn" .
+"Windows Update reset has been completed." .
 "Windows will automatically make a new SoftwareDistribution folder.",
 "Windows Update",
 "Iconi"
@@ -783,9 +786,9 @@ global IsRunning
 if IsRunning
 return
 if !ConfirmAction(
-"Catroot2 is getting recreatednn" .
+"Catroot2 is getting recreated" .
 "This is an official Windows troubleshoot" .
-"for cryptographic/Windows update issues.nn" .
+"for cryptographic/Windows update issues." .
 "Continue?"
 )
 return
@@ -824,9 +827,9 @@ RunCommand(
 "Start Cryptographic Services"
 )
 LogMessage("Catroot2 reset completed.")
-SetStatus("Catroot2 reset voltooid.")
+SetStatus("Catroot2 reset completed.")
 MsgBox(
-"Catroot2 reset is voltooid.",
+"Catroot2 reset is completed.",
 "Windows Maintenance Suite",
 "Iconi"
 )
@@ -846,9 +849,9 @@ SetButtonsEnabled(false)
 try {
 SetStatus("Generating system report...")
 GenerateSystemReportInternal()
-SetStatus("System report voltooid.")
+SetStatus("System report completed.")
 MsgBox(
-"System report generated.nn" .
+"System report generated." .
 "See the results tab for the file directory.",
 "Diagnostics",
 "Iconi"
@@ -993,7 +996,7 @@ FileCopy(source, destination, true)
 LogMessage("CBS.log exported to: " destination)
 SetStatus("CBS.log exported.")
 MsgBox(
-"CBS.log is exported to:nn" destination,
+"CBS.log is exported to:" destination,
 "Diagnostics",
 "Iconi"
 )
@@ -1003,7 +1006,7 @@ LogMessage(
 "ERROR exporting CBS.log: " err.Message
 )
 MsgBox(
-"CBS.log couldn't be copied.nn" .
+"CBS.log couldn't be copied." .
 err.Message,
 "Diagnostics",
 "Iconx"
@@ -1036,9 +1039,9 @@ return
 try {
 FileCopy(source, destination, true)
 LogMessage("DISM.log exported to: " destination)
-SetStatus("DISM.log geëxporteerd.")
+SetStatus("DISM.log exported.")
 MsgBox(
-"DISM.log exported to:nn" destination,
+"DISM.log exported to:" destination,
 "Diagnostics",
 "Iconi"
 )
@@ -1048,7 +1051,7 @@ LogMessage(
 "ERROR exporting DISM.log: " err.Message
 )
 MsgBox(
-"DISM.log couldn't be exported.nn" .
+"DISM.log couldn't be exported." .
 err.Message,
 "Diagnostics",
 "Iconx"
@@ -1075,7 +1078,7 @@ exitCode := RunPowerShell(
 if exitCode = 0 {
 SetStatus("Windows Update log generated.")
 MsgBox(
-"Windows Update log is gegenereerd naar:nn" destination,
+"Windows Update log was generated to:" destination,
 "Diagnostics",
 "Iconi"
 )
@@ -1083,7 +1086,7 @@ MsgBox(
 else {
 SetStatus("Windows Update log has reported an error.")
 MsgBox(
-"Windows Update log generation unsuccesful.nn" .
+"Windows Update log generation unsuccesful." .
 "Exit code: " exitCode,
 "Diagnostics",
 "Iconx"
@@ -1100,8 +1103,10 @@ SetButtonsEnabled(true)
 ClearLog(*) {
 global logBox
 if !ConfirmAction(
-"This will remove application logs.nnContinue?"
+    "This will remove application logs.`n`n"
+    "Continue?"
 )
+
 return
 logBox.Value := ""
 try FileDelete(LogFile)
@@ -1118,10 +1123,10 @@ Run(LogFile)
 }
 catch as err {
 MsgBox(
-"Logbestand couldn't get opened.nn" .
-err.Message,
-"Windows Maintenance Suite",
-"Iconx"
+    "Log couldn't be opened.`n`n" err.Message,
+    "Windows Maintenance Suite",
+    "Iconx"
 )
 }
 }
+
