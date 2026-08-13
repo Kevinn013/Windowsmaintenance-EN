@@ -29,7 +29,7 @@ This tool is ideal for users who want safe, automated Windows maintenance withou
 3. Choose your desired maintenance action from the tabbed interface.  
 4. Check the **Logs** tab for detailed results and exit codes.
 
-## Windows Security Exlusion
+## Windows Security Windows Security Exclusion
 Because this tool is a custom executable, Windows Security may flag or block it.
 To ensure the application runs correctly, add it as an exclusion:
 
