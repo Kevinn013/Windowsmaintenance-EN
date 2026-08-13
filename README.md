@@ -23,12 +23,23 @@ This tool is ideal for users who want safe, automated Windows maintenance withou
 
 ---
 
-## How to Use
+## Usage
 1. Download the latest `.exe` or `.ahk` file from the repository.  
 2. **Run as Administrator** (required for DISM/SFC commands).  
 3. Choose your desired maintenance action from the tabbed interface.  
 4. Check the **Logs** tab for detailed results and exit codes.
 
+## Windows Security Exlusion
+Because this tool is a custom executable, Windows Security may flag or block it.
+To ensure the application runs correctly, add it as an exclusion:
+
+- Open Windows Security
+- Go to Virus & threat protection
+- Click Manage settings under Virus & threat protection settings
+- Scroll down to Exclusions
+- Click Add an exclusion → choose File
+- Select the .exe of the Weekly Maintenance
+  
 ---
 
 ## Requirements
@@ -57,17 +68,3 @@ MIT License - free to use, modify, and distribute.
 
 ## Resources
 Autohotkey 2.0 official webpage: https://www.autohotkey.com/v2/
-
-
----
-
-## Usage & Windows Security Exclusion
-Because this tool is a custom executable, Windows Security may flag or block it.
-To ensure the application runs correctly, add it as an exclusion:
-
-- Open Windows Security
-- Go to Virus & threat protection
-- Click Manage settings under Virus & threat protection settings
-- Scroll down to Exclusions
-- Click Add an exclusion → choose File
-- Select the .exe of the Weekly Maintenance
