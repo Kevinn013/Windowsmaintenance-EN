@@ -54,3 +54,5 @@ Created with ❤️ and curiosity for system integrity and safe automation.
 MIT License — free to use, modify, and distribute.
 
 ---
+
+Autohotkey 2.0 official webpage: https://www.autohotkey.com/v2/
